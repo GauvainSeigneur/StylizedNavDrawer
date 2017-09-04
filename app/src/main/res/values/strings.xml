@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TestProject</string>
+    <string name="nav_drawer_opened">drawer opened</string>
+    <string name="nav_drawer_closed">drawer closed</string>
+
+    <!-- Alpha value is important due to using the @ParseColor method -->
+    <string name="nav_drawer_item_1">#FF5ab1f6</string>
+    <string name="nav_drawer_item_2">#FF42a5f5</string>
+    <string name="nav_drawer_item_3">#FF2a99f4</string>
+    <string name="nav_drawer_item_4">#FF128ef2</string>
+    <string name="nav_drawer_item_5">#FF0c80df</string>
+    <string name="nav_drawer_item_6">#FF0966b2</string>
+</resources>

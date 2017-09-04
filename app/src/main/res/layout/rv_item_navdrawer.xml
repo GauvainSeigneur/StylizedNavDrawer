@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:weightSum="1"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!--android:background="?android:attr/selectableItemBackground"-->
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="16dp">
+
+        <ImageView
+            android:id="@+id/menu_item_icon_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/round_shape"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/menu_item_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:tint="@color/md_white_1000"
+            android:src="@drawable/ic_warning_black_24dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/menu_item_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:text="Title here"
+        android:textSize="16sp" />
+
+</LinearLayout>
