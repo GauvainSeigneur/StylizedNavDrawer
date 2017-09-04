@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_green_400">
+    android:background="@color/md_grey_200">
 
     <!--AppBarLayout-->
     <android.support.design.widget.AppBarLayout
@@ -29,10 +29,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <View
+    <android.support.v4.widget.NestedScrollView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/md_blue_700" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
