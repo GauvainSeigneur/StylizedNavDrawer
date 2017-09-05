@@ -90,7 +90,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
      */
     public void setUpNavigationDrawer(Toolbar toolbar) {
         setUpNavMenu();
-        fullNavDrawer();
         // use the hamburger menu
         drawerToggle = new ActionBarDrawerToggle(
                 this,                           // host Activity
@@ -129,7 +128,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                complexNavDrawerAnim(drawerView,slideOffset);
+                setUpNavigationAnimation(drawerView, slideOffset);
 
             }
 
@@ -174,8 +173,10 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
                 //fullLayout.closeDrawer(GravityCompat.START); //to close navDrawer on click
                 switch(position) {
                     case 0:
+                        goToActivity(MainActivity.class);
                         break;
                     case 1:
+                        goToActivity(PushMenuActivity.class);
                         break;
                     case 2:
                         break;
@@ -227,7 +228,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     }
 
     //NavigationDrawer seems below activity thanks to a shadow around the activity container
-    protected void belowNavDrawer(View drawerView, float slideOffset){
+    protected void pushScaleNavDrawer(View drawerView, float slideOffset){
         float min = 0.8f;
         float max = 1.0f;
         float minShadow = 0.83f;
@@ -238,6 +239,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         childActivityParentContainer.setScaleX(scaleFactor);
         childActivityParentContainer.setScaleY(scaleFactor);
         //Shadow
+        fakeShadow.setVisibility(View.VISIBLE);
         fakeShadow.setTranslationX(slideOffset * (drawerView.getWidth()-shadowTranslationOffset));
         fakeShadow.setScaleX(scaleFactorShadow);
         fakeShadow.setScaleY(scaleFactorShadow);
@@ -283,7 +285,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         fakeShadow.setRotationY(rotationFactorY);
         fakeShadow.setRotation(rotationFactor);
         noShadowNavDrawer();
-        closeNavDrawerView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -291,35 +292,49 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
      *
      * to be mixed with the Drawer & FrameLayout animation
      */
+
     //Menu seems fixed -- good mixed with BelowNavDrawer
     protected void fixedMenu(View drawerView, float slideOffset){
         float InverseNavDrawerOffset=((slideOffset-1)*-1)*(drawerView.getWidth());
         //navigationViewMenu.setAlpha(1+(slideOffset-1));
         navigationViewMenu.setTranslationX(InverseNavDrawerOffset);
     }
+
     //Menu moves as inverse the swipe direction of drawerlayout
     protected void moveInverseMenu(View drawerView, float slideOffset){
         float InverseNavDrawerOffsetDouble=((slideOffset-1)*-1)*(drawerView.getWidth()*2);
         navigationViewMenu.setAlpha(1+(slideOffset-1));
 
-        //Option 1 : move all layout according to slideoffset : here I Move it at the inverse of slide.
+        //move all layout according to slideoffset : here I Move it at the inverse of slide.
         navigationViewMenu.setTranslationX(InverseNavDrawerOffsetDouble);
 
+    }
+
+    //Menu Item moves separatly  as inverse the swipe direction of drawerlayout
+    protected void moveInverseItemMenu(View drawerView, float slideOffset){
+        navigationViewMenu.setAlpha(1+(slideOffset-1));
+
         //Option 2 : move each item separatly according to slideoffset
-        /*int firstVisibleItemPosition = navigationMenuLayoutManager.findFirstVisibleItemPosition();
+        int firstVisibleItemPosition = navigationMenuLayoutManager.findFirstVisibleItemPosition();
         int lastVisibleItemPosition = navigationMenuLayoutManager.findLastVisibleItemPosition();
         for (int i = firstVisibleItemPosition; i <= lastVisibleItemPosition; i++) {
             NavMenuViewHolder holderForAdapterPosition = (NavMenuViewHolder) navigationViewMenu.findViewHolderForAdapterPosition(i);
             View itemView = holderForAdapterPosition.itemView;
             float translateItem = ((slideOffset-1)*-1)*(drawerView.getWidth()*(i+2)*(0.6f));//add +2 to i to make first item move too
             itemView.setTranslationX(translateItem);
-        }*/
+        }
 
     }
+
     //Menu moves as the swipe direction of drawerlayout
     protected void moveMenu(View drawerView, float slideOffset){
+    }
+
+    //Todo - for demo purpose -- to delete
+    public void setUpNavigationAnimation(View drawerView, float slideOffset){
 
     }
+
 
     /**
      * Methods to change navigation drawer state
