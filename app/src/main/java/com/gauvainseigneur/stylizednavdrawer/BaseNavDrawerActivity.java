@@ -164,25 +164,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
         mDrawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-
-        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        mDrawerLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-
-                // we place a background behind the status bar to combine with it's semi-transparent
-                // color to get the desired appearance.  Set it's height to the status bar height
-
-                View statusBarBackground = findViewById(R.id.status_bar_background);
-                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                        statusBarBackground.getLayoutParams();
-                lpStatus.height = insets.getSystemWindowInsetTop();
-                statusBarBackground.setLayoutParams(lpStatus);
-
-
-                return insets.consumeSystemWindowInsets();
-            }
-        });
     }
 
     protected void setUpNavMenu() {
@@ -245,15 +226,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         return DrawerOpen;
     }
 
-
-    public void windowNoLimit () {
-        //this value needs to be combined with style to works fine...
-        mDrawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-
-    }
-
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -267,12 +239,9 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
      * Methods to animate DrawerLayout & FrameLayout
      */
     //NavigationDrawer push activity
-    protected void pushNavDrawer(View drawerView, float slideOffset){
+    protected void pushNavDrawer(View drawerView, float slideOffset) {
         childActivityParentContainer.setTranslationX(slideOffset * drawerView.getWidth());
-        mDrawerLayout.setDrawerShadow(R.drawable.no_navdrawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerElevation(0f);
-        mDrawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
-        mDrawerLayout.requestLayout();
+        noShadowNavDrawer();
     }
 
     //NavigationDrawer seems below activity thanks to a shadow around the activity container
@@ -290,16 +259,15 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         fakeShadow.setTranslationX(slideOffset * (drawerView.getWidth()-shadowTranslationOffset));
         fakeShadow.setScaleX(scaleFactorShadow);
         fakeShadow.setScaleY(scaleFactorShadow);
-        //disbale shadow, elevation and change fade color into transparent when nav drawer is open.
-        mDrawerLayout.setDrawerShadow(R.drawable.no_navdrawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerElevation(0f);
-        mDrawerLayout.setScrimColor(ContextCompat.getColor(this, android.R.color.transparent));
+        noShadowNavDrawer();
     }
 
     //NavigationDrawer move with complex animation
-    protected void complexNavDrawerAnim(View drawerView, float slideOffset){
+    protected void complexNavDrawerAnim(View drawerView, float slideOffset) {
         //todo : define the bottom of activity
-        int bottomMargin = (int) Utils.convertDpToPixel(128,this);
+        int bottomMargin = (int) Utils.convertDpToPixel(128, this);
+        int bottomMargin2 = (int) Utils.convertDpToPixel(120, this);
+        float bottomOfScreen = getResources().getDisplayMetrics().heightPixels;
         final float minXYZ = 0;
         final float MAX_ROTATION_X = 45; //90 //45
         final float MAX_ROTATION_Y = 5; // 90
@@ -313,9 +281,8 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         float rotationFactorX = (minXYZ - ((minXYZ - MAX_ROTATION_X)) * slideOffset);
         float rotationFactorY = (minXYZ - ((minXYZ - MAX_ROTATION_Y) * slideOffset));
         float rotationFactor = (minXYZ - ((minXYZ - MAX_ROTATION_Z) * slideOffset));
-        //Transaltion
-        //mCoordinatorLayout.setTranslationX(slideOffset * (drawerView.getWidth()-activityPaddingLeft));
-        childActivityParentContainer.setTranslationY(slideOffset * (drawerView.getWidth()-bottomMargin));
+        //Translation
+        childActivityParentContainer.setTranslationY((slideOffset * (bottomOfScreen-bottomMargin)*min));
         childActivityParentContainer.setCameraDistance((CAMERA_DISTANCE * getResources().getDisplayMetrics().density));
         //Rotation
         childActivityParentContainer.setRotationX(rotationFactorX);
@@ -326,17 +293,14 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         childActivityParentContainer.setScaleY(scaleFactor);
         //Shadow
         //fakeShadow.setVisibility(View.GONE);
-        fakeShadow.setTranslationY(slideOffset * (drawerView.getWidth()-bottomMargin));
+        fakeShadow.setTranslationY((slideOffset * (bottomOfScreen-bottomMargin2)*min));
         fakeShadow.setCameraDistance((CAMERA_DISTANCE * getResources().getDisplayMetrics().density));
         fakeShadow.setScaleX(scaleFactorShadow);
         fakeShadow.setScaleY(scaleFactorShadow);
         fakeShadow.setRotationX(rotationFactorX);
         fakeShadow.setRotationY(rotationFactorY);
         fakeShadow.setRotation(rotationFactor);
-        //disbale shadow, elevation and change fade color into transparent when nav drawer is open.
-        mDrawerLayout.setDrawerShadow(R.drawable.no_navdrawer_shadow, GravityCompat.START);
-        mDrawerLayout.setDrawerElevation(0f);
-        mDrawerLayout.setScrimColor(ContextCompat.getColor(this, android.R.color.transparent));
+        noShadowNavDrawer();
     }
 
     /**
@@ -383,5 +347,16 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         navigationView.setLayoutParams(params);
     }
 
+    public void noShadowNavDrawer() {
+        //disbale shadow, elevation and change fade color into transparent when nav drawer is open.
+        mDrawerLayout.setDrawerShadow(R.drawable.no_navdrawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerElevation(0f);
+        mDrawerLayout.setScrimColor(ContextCompat.getColor(this, android.R.color.transparent));
+    }
 
+    public void closeNavDrawer() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
 }

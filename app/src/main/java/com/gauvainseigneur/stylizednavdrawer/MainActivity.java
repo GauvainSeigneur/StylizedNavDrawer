@@ -12,7 +12,8 @@ public class MainActivity extends BaseNavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        windowNoLimit();
+        //windowNoLimit();
+        fullNavDrawer();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setUpNavView(toolbar);
     }

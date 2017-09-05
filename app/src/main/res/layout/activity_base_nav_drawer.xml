@@ -12,12 +12,6 @@
         android:layout_height="match_parent">
 
         <View
-            android:id="@+id/status_bar_background"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/status_bar_back" />
-
-        <View
             android:id="@+id/fakeShadow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,8 +20,7 @@
         <RelativeLayout
             android:id="@+id/activity_parent_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/md_grey_50">
+            android:layout_height="match_parent">
 
             <FrameLayout
                 android:id="@+id/activity_content"

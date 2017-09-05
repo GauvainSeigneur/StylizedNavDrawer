@@ -6,8 +6,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!-- Status Bar Color -->
-        <item name="android:statusBarColor">@color/immersive_bars</item>
         <!-- Action mode -->
         <!-- transition and overlay-->
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -28,7 +26,7 @@
     </style>
 
     <style name="AppTheme.DrawerActivity">
-        <item name="android:statusBarColor">@color/immersive_bars</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
 

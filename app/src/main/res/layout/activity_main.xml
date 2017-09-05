@@ -13,13 +13,6 @@
         android:layout_width="match_parent"
         app:theme="@style/ThemeOverlay.AppCompat.Light">
 
-        <View
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:id="@+id/StatusBarFakeBG"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"/>
-
-        <!--Simple toolBar-->
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             app:layout_scrollFlags="scroll|enterAlways"
