@@ -44,7 +44,8 @@
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,12 +54,18 @@
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_navdrawer_menu"
-                    android:clipToPadding="false"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="48dp"
                     android:nestedScrollingEnabled="false"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:id="@+id/closeNavDrawerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="24dp"
+                    android:clickable="true"
+                    android:visibility="gone"/>
+
 
             </LinearLayout>
 

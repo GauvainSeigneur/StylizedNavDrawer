@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -39,6 +40,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
     public DrawerLayout mDrawerLayout;
     public NavigationView navigationView;
+    public View closeNavDrawerView;
     public RelativeLayout childActivityParentContainer;
     public FrameLayout childActivityContainer;
     public View fakeShadow;
@@ -79,28 +81,16 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         fakeShadow = findViewById(R.id.fakeShadow);
        // mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.base_nav_coordinator_layout);
         setSupportActionBar(toolbar);
-        setUpNavView(toolbar);
+        setUpNavigationDrawer(toolbar);
 
 
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mDrawerLayout.closeDrawer(Gravity.LEFT, false);
-    }
-
     /**
-     * Helper method to allow child classes to opt-out of having the
-     * hamburger menu.
-     * @return
+     * set up navigationDrawer
      */
-    protected boolean useDrawerToggle() {
-        return true;
-    }
-
-    public void setUpNavView(Toolbar toolbar) {
+    public void setUpNavigationDrawer(Toolbar toolbar) {
         setUpNavMenu();
+        fullNavDrawer();
         // use the hamburger menu
         drawerToggle = new ActionBarDrawerToggle(
                 this,                           // host Activity
@@ -111,13 +101,11 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         )
             {
             public void onDrawerClosed(View view) {
-                //getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 DrawerOpen=false;
             }
 
             public void onDrawerOpened(View drawerView) {
-                //getSupportActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 DrawerOpen=true;
 
@@ -142,9 +130,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 complexNavDrawerAnim(drawerView,slideOffset);
-                //belowNavDrawer(drawerView,slideOffset);
-                //fixedMenu(drawerView,slideOffset);
-                moveMenu(drawerView,slideOffset);
 
             }
 
@@ -166,8 +151,16 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
+    //Set recyclerview menu list and manage menu item click
     protected void setUpNavMenu() {
         navigationViewMenu = (RecyclerView) findViewById(R.id.rv_navdrawer_menu);
+        closeNavDrawerView = findViewById(R.id.closeNavDrawerView);
+        closeNavDrawerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeNavDrawer();
+            }
+        });
         //navigationViewMenu.setNestedScrollingEnabled(false);
         navigationMenuLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         navigationViewMenu.setLayoutManager(navigationMenuLayoutManager);
@@ -193,6 +186,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         });
     }
 
+    //Dummy list of item for the menu
     private List<NavMenuItemObject> setNavMenuList(){
         List<NavMenuItemObject> allItems = new ArrayList<NavMenuItemObject>();
         allItems.add(new NavMenuItemObject(Color.parseColor(getString(R.string.nav_drawer_item_1)),R.drawable.ic_warning_black_24dp, "Add a mean of payment"));
@@ -201,15 +195,16 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         allItems.add(new NavMenuItemObject(Color.parseColor(getString(R.string.nav_drawer_item_4)),R.drawable.ic_warning_black_24dp, "help us, give feedback"));
         allItems.add(new NavMenuItemObject(Color.parseColor(getString(R.string.nav_drawer_item_5)),R.drawable.ic_warning_black_24dp, "Contact"));
         return allItems;
-}
+    }
 
-
+    //intent to start activity on men item click
     public void goToActivity (Class activityClass) {
         Intent goToActivityintent = new Intent(BaseNavDrawerActivity.this, activityClass);
         BaseNavDrawerActivity.this.startActivity(goToActivityintent);
         ActivityOptions.makeSceneTransitionAnimation(BaseNavDrawerActivity.this).toBundle();
     }
 
+    //check if activity is currently running
     protected Boolean isActivityRunning(Class activityClass) {
         ActivityManager activityManager = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
@@ -220,19 +215,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         }
 
         return false;
-    }
-
-    public boolean isDrawerOpen() {
-        return DrawerOpen;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     /**
@@ -301,6 +283,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         fakeShadow.setRotationY(rotationFactorY);
         fakeShadow.setRotation(rotationFactor);
         noShadowNavDrawer();
+        closeNavDrawerView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -314,8 +297,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         //navigationViewMenu.setAlpha(1+(slideOffset-1));
         navigationViewMenu.setTranslationX(InverseNavDrawerOffset);
     }
-
-    //Menu moves on drag
+    //Menu moves as inverse the swipe direction of drawerlayout
     protected void moveInverseMenu(View drawerView, float slideOffset){
         float InverseNavDrawerOffsetDouble=((slideOffset-1)*-1)*(drawerView.getWidth()*2);
         navigationViewMenu.setAlpha(1+(slideOffset-1));
@@ -334,11 +316,15 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         }*/
 
     }
-
+    //Menu moves as the swipe direction of drawerlayout
     protected void moveMenu(View drawerView, float slideOffset){
 
     }
 
+    /**
+     * Methods to change navigation drawer state
+     */
+    //make navigation fullwidth
     public void fullNavDrawer() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -346,17 +332,40 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         params.width = metrics.widthPixels;
         navigationView.setLayoutParams(params);
     }
-
+    //remove navigationdrawer shadow & scrim
     public void noShadowNavDrawer() {
         //disbale shadow, elevation and change fade color into transparent when nav drawer is open.
         mDrawerLayout.setDrawerShadow(R.drawable.no_navdrawer_shadow, GravityCompat.START);
         mDrawerLayout.setDrawerElevation(0f);
         mDrawerLayout.setScrimColor(ContextCompat.getColor(this, android.R.color.transparent));
     }
-
+    //close navigation drawer
     public void closeNavDrawer() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
+
+    /**
+     * Manage navigation drawer state trough the activity life cycle
+     */
+    public boolean isDrawerOpen() {
+        return DrawerOpen;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mDrawerLayout.closeDrawer(Gravity.LEFT, false);
+    }
+
 }
