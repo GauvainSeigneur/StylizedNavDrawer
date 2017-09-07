@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PushMenuActivity"></activity>
+        <activity android:name=".PushMenuActivity" />
+        <activity android:name=".ComplexAnimActivity"></activity>
     </application>
 
 </manifest>

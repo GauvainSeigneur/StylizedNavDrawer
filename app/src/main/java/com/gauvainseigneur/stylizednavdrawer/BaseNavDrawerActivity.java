@@ -1,16 +1,18 @@
 package com.gauvainseigneur.stylizednavdrawer;
 
 
+import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,10 +23,15 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.gauvainseigneur.stylizednavdrawer.Interpolators.CircInOut;
+import com.gauvainseigneur.stylizednavdrawer.Interpolators.ExpoIn;
+import com.gauvainseigneur.stylizednavdrawer.Interpolators.ExpoOut;
+import com.gauvainseigneur.stylizednavdrawer.Interpolators.QuadInOut;
+import com.gauvainseigneur.stylizednavdrawer.Interpolators.QuintInOut;
 import com.gauvainseigneur.stylizednavdrawer.menulist.NavMenuItemObject;
 import com.gauvainseigneur.stylizednavdrawer.menulist.NavMenuRVAdapter;
 import com.gauvainseigneur.stylizednavdrawer.menulist.NavMenuViewHolder;
@@ -138,7 +145,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         //Use a dedicated Icon to Open NavDrawer
         // comment or delete if you want to use traditional icon
         drawerToggle.setDrawerIndicatorEnabled(false);
-        drawerToggle.setHomeAsUpIndicator(R.drawable.ic_round_menu__black_24dp);
+        drawerToggle.setHomeAsUpIndicator(R.drawable.ic_round_menu_white_24dp);
         drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,7 +177,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         ItemClickSupport.addTo(navigationViewMenu).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                //fullLayout.closeDrawer(GravityCompat.START); //to close navDrawer on click
                 switch(position) {
                     case 0:
                         goToActivity(MainActivity.class);
@@ -179,6 +185,9 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
                         goToActivity(PushMenuActivity.class);
                         break;
                     case 2:
+                        animateQuit();
+                        //navigationViewMenu.setAlpha(0);
+                        goToActivity2(ComplexAnimActivity.class);
                         break;
 
 
@@ -203,6 +212,19 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         Intent goToActivityintent = new Intent(BaseNavDrawerActivity.this, activityClass);
         BaseNavDrawerActivity.this.startActivity(goToActivityintent);
         ActivityOptions.makeSceneTransitionAnimation(BaseNavDrawerActivity.this).toBundle();
+    }
+
+    //Todo - Just for test - to delete
+    public void goToActivity2 (Class activityClass) {
+        final Intent goToActivityintent = new Intent(BaseNavDrawerActivity.this, activityClass);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                goToActivityintent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivityForResult(goToActivityintent, 0);
+                overridePendingTransition(0,0);
+            }
+        }, 400);
     }
 
     //check if activity is currently running
@@ -381,6 +403,99 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mDrawerLayout.closeDrawer(Gravity.LEFT, false);
+    }
+
+
+    public void animateQuit(){
+        QuitToRight(childActivityParentContainer,  10,0);
+        QuitToRight(fakeShadow,  10,8);
+        translateMenuToRight();
+    }
+
+    private void translateMenuToRight(){
+        float x = navigationViewMenu.getX();
+        ObjectAnimator transAnimation= ObjectAnimator.ofFloat(navigationViewMenu,
+                View.TRANSLATION_X, x,
+                -navigationViewMenu.getResources().getDisplayMetrics().widthPixels);
+        transAnimation.setDuration(500);
+        transAnimation.setInterpolator(new FastOutSlowInInterpolator());
+        transAnimation.start();
+    }
+
+    private void QuitToRight(View target, float moveY, int delay) {
+        float y = childActivityParentContainer.getY();
+        float x = childActivityParentContainer.getX();
+
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, y, -moveY * target.getResources().getDisplayMetrics().widthPixels);
+        translateY.setDuration(500);
+        translateY.setInterpolator(new ExpoIn());
+        translateY.setStartDelay(delay);
+        translateY.start();
+
+        ObjectAnimator translateX = ObjectAnimator.ofFloat(target, View.TRANSLATION_X, x, moveY * target.getResources().getDisplayMetrics().heightPixels);
+        translateX.setDuration(500);
+        translateX.setInterpolator(new ExpoIn());
+        translateX.setStartDelay(delay);
+        translateX.start();
+
+
+    }
+
+    public void startIntroAnim(View target) {
+        //to do : addlistener to make fakeshadow visible at the end
+        fakeShadow.setVisibility(View.GONE);
+        //animate menu
+        //navigationViewMenu.setTranslationX(500);
+
+
+        inroAnimate2(target,0.40f,0);
+    }
+
+
+    static ObjectAnimator inroAnimate2(final View target, final float TragetScale, final float moveY) {
+        float TARGET_ROTATION = 45;
+        float TARGET_ROTATION_X = 45;
+
+        target.setCameraDistance(10000 * target.getResources().getDisplayMetrics().density);
+
+        ObjectAnimator translationY2 = ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, target.getResources().getDisplayMetrics().heightPixels, -moveY * target.getResources().getDisplayMetrics().density).setDuration(800);
+        translationY2.setInterpolator(new ExpoOut());
+        translationY2.setStartDelay(0);
+        translationY2.start();
+        target.setTranslationY(target.getResources().getDisplayMetrics().heightPixels);
+
+        ObjectAnimator translationX2 = ObjectAnimator.ofFloat(target, View.TRANSLATION_X, -target.getResources().getDisplayMetrics().widthPixels, 0).setDuration(500);
+        translationX2.setInterpolator(new ExpoOut());
+        translationX2.setStartDelay(0 );
+        translationX2.start();
+        target.setTranslationX(-target.getResources().getDisplayMetrics().widthPixels);
+
+        ObjectAnimator rotationX = ObjectAnimator.ofFloat(target, View.ROTATION_X, TARGET_ROTATION_X, 0).setDuration(700);
+        rotationX.setInterpolator(new QuintInOut());
+        rotationX.setStartDelay(0 + 300);
+        rotationX.start();
+        target.setRotationX(TARGET_ROTATION_X);
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(target, View.SCALE_X, TragetScale, target.getScaleX()).setDuration(700);
+        scaleX.setInterpolator(new CircInOut());
+        scaleX.setStartDelay(0 + 300);
+        scaleX.start();
+        target.setScaleX(TragetScale);
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(target, View.SCALE_Y, TragetScale, target.getScaleY()).setDuration(700);
+        scaleY.setInterpolator(new CircInOut());
+        scaleY.setStartDelay(0 + 300);
+        scaleY.start();
+        target.setScaleY(TragetScale);
+
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(target, View.ROTATION, TARGET_ROTATION, 0).setDuration(400);
+        rotation.setInterpolator(new QuadInOut());
+        rotation.setStartDelay(300);
+        rotation.start();
+        target.setRotation(TARGET_ROTATION);
+
+        return scaleY;
+
     }
 
 }
