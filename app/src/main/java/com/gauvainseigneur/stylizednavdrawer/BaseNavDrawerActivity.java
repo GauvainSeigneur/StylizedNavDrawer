@@ -405,7 +405,10 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawer(Gravity.LEFT, false);
     }
 
-
+    /**
+     * Transition between two activities with fly over effect
+     * Used in addition of complex animation
+     */
     public void animateQuit(){
         QuitToRight(childActivityParentContainer,  10,0);
         QuitToRight(fakeShadow,  10,8);
@@ -450,7 +453,6 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
         inroAnimate2(target,0.40f,0);
     }
-
 
     static ObjectAnimator inroAnimate2(final View target, final float TragetScale, final float moveY) {
         float TARGET_ROTATION = 45;
