@@ -18,7 +18,7 @@ public class PushMenuActivity extends BaseNavDrawerActivity {
     }
 
     @Override
-    public void setUpNavigationAnimation(View drawerView, float slideOffset){
+    public void setNavDrawerSlideAnimation(View drawerView, float slideOffset){
         pushNavDrawer(drawerView,slideOffset);
         moveInverseItemMenu(drawerView,slideOffset);
     }

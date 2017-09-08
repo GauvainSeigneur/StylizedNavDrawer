@@ -1,5 +1,6 @@
 package com.gauvainseigneur.stylizednavdrawer;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +19,19 @@ public class ComplexAnimActivity extends BaseNavDrawerActivity {
         setUpNavigationDrawer(toolbar);
         fullNavDrawer();
         closeNavDrawerView.setVisibility(View.VISIBLE);
-        startIntroAnim(childActivityContainer);
+        fakeShadow.setVisibility(View.VISIBLE);
+
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+        if(b!=null) {
+            startIntroAnim(childActivityContainer);
+            startIntroAnim(fakeShadow);
+        }
+
     }
 
     @Override
-    public void setUpNavigationAnimation(View drawerView, float slideOffset){
+    public void setNavDrawerSlideAnimation(View drawerView, float slideOffset){
         complexNavDrawerAnim(drawerView,slideOffset);
     }
 }
