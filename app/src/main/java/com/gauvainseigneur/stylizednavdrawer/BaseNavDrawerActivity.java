@@ -290,7 +290,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     //NavigationDrawer move with complex animation
     protected void complexNavDrawerAnim(View drawerView, float slideOffset) {
         complexAnimateView(childActivityParentContainer, slideOffset, 0);
-        complexAnimateView(fakeShadow, slideOffset, 0.05f);
+        complexAnimateView(fakeShadow, slideOffset, 0.045f);//todo - some issues on drag view on startIntroAnim(target) with
         noShadowNavDrawer();
     }
 
@@ -313,8 +313,8 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         view.setScaleX(scaleFactorX);
         view.setScaleY(scaleFactorY);
         //OutlineProvider
-        float cornerSlide = (0 - ((0 - 32)) * slideOffset);
-        view.setOutlineProvider(new CustomViewOutlineProvider((int)cornerSlide));
+        float cornerOnSlide = rotateOnSlide(32, slideOffset);
+        view.setOutlineProvider(new CustomViewOutlineProvider((int)cornerOnSlide));
         view.setClipToOutline(true);
 
     }
@@ -514,7 +514,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         complexAnimatorSet.playTogether(slideYOut(childActivityParentContainer, MOVE_Y,0),
                 slideXOut(childActivityParentContainer, MOVE_Y, 0),
                 slideYOut(fakeShadow, MOVE_Y,0),
-                slideXOut(fakeShadow, MOVE_Y, 8),
+                slideXOut(fakeShadow, MOVE_Y, 0),
                 slideXOut(navigationViewMenu, -MOVE_Y, 0));
         complexAnimatorSet.setDuration(duration);
         complexAnimatorSet.start();
