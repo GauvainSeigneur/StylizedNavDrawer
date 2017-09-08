@@ -297,11 +297,11 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     private void complexAnimateView(View view, float slideOffset, float AdditionalScaleValue){
         int bottomMargin = (int) Utils.convertDpToPixel((128), this);
         float bottomOfScreen = getResources().getDisplayMetrics().heightPixels;
-        float scaleFactorX = scale(MIN_TARGET_SCALE, AdditionalScaleValue*(1.8f),slideOffset);
-        float scaleFactorY = scale(MIN_TARGET_SCALE, AdditionalScaleValue,slideOffset);
-        float rotationFactorX = rotate(MAX_ROTATION_X,slideOffset);
-        float rotationFactorY = rotate(MAX_ROTATION_Y,slideOffset);
-        float rotationZ = rotate(MAX_ROTATION_Z,slideOffset);
+        float scaleFactorX = scaleOnSlide(MIN_TARGET_SCALE, AdditionalScaleValue*(1.8f),slideOffset);
+        float scaleFactorY = scaleOnSlide(MIN_TARGET_SCALE, AdditionalScaleValue,slideOffset);
+        float rotationFactorX = rotateOnSlide(MAX_ROTATION_X,slideOffset);
+        float rotationFactorY = rotateOnSlide(MAX_ROTATION_Y,slideOffset);
+        float rotationZ = rotateOnSlide(MAX_ROTATION_Z,slideOffset);
         //Translation
         view.setTranslationY((slideOffset * (bottomOfScreen-(bottomMargin))*MIN_TARGET_SCALE));
         view.setCameraDistance((CAMERA_DISTANCE * getResources().getDisplayMetrics().density));
@@ -319,12 +319,12 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
     }
 
-    private float rotate(float xyzValue, float slideOffset) {
+    private float rotateOnSlide(float xyzValue, float slideOffset) {
         Float rotateFloat = (MIN_ROTATION_XYZ - ((MIN_ROTATION_XYZ - xyzValue)) * slideOffset);
         return rotateFloat;
     }
 
-    private float scale(float minTargetScale, float AdditionalScaleValue, float slideOffset){
+    private float scaleOnSlide(float minTargetScale, float AdditionalScaleValue, float slideOffset){
         float scaleFloat = (MAX_TARGET_SCALE - ((MAX_TARGET_SCALE - (minTargetScale +
                 AdditionalScaleValue)) * slideOffset));
         return scaleFloat;
