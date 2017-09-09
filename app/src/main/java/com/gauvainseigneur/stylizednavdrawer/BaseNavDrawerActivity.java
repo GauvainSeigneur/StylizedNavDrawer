@@ -320,7 +320,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     }
 
     private float rotateOnSlide(float xyzValue, float slideOffset) {
-        Float rotateFloat = (MIN_ROTATION_XYZ - ((MIN_ROTATION_XYZ - xyzValue)) * slideOffset);
+        float rotateFloat = (MIN_ROTATION_XYZ - ((MIN_ROTATION_XYZ - xyzValue)) * slideOffset);
         return rotateFloat;
     }
 
@@ -449,7 +449,7 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
      * To be used in addition of complexNavDrawerAnim
      **************************************************************************/
     public void startIntroAnim(View target) {
-        inComplexAnimation(target,0.40f,0);
+        inComplexAnimation(target,MIN_TARGET_SCALE,0);
     }
 
     private ObjectAnimator inComplexAnimation(final View target, final float targetScale,
@@ -496,13 +496,11 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         target.setScaleY(targetScale);
 
         //Rotation
-        // Last animation of the object animator, so we put listener on it
         ObjectAnimator rotation = ObjectAnimator.ofFloat(target, View.ROTATION,
                 TARGET_ROTATION, 0).setDuration(400);
         rotation.setInterpolator(new QuadInOut());
         rotation.setStartDelay(300);
         rotation.start();
-        // rotation.addListener(onAnimationEnd);
         target.setRotation(TARGET_ROTATION);
 
         return scaleY;
