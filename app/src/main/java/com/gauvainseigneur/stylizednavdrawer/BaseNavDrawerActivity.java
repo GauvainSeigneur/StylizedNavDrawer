@@ -74,10 +74,10 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
     private float MIN_TARGET_SCALE= 0.40f;
     private float MAX_TARGET_SCALE= 1f;
     private float MIN_ROTATION_XYZ= 0f;
-    private float MAX_ROTATION_X =45;
-    private float MAX_ROTATION_Y = 5;
-    private float MAX_ROTATION_Z = 65;
-    private float CAMERA_DISTANCE = 6000f;
+    private float MAX_ROTATION_X =45;   //max:90
+    private float MAX_ROTATION_Y = 5;   //max:90
+    private float MAX_ROTATION_Z = 65;  //max:360
+    private float CAMERA_DISTANCE = 3000f;
 
     private AnimatorSet complexAnimatorSet;
 
@@ -304,7 +304,8 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         float rotationZ = rotateOnSlide(MAX_ROTATION_Z,slideOffset);
         //Translation
         view.setTranslationY((slideOffset * (bottomOfScreen-(bottomMargin))*MIN_TARGET_SCALE));
-        view.setCameraDistance((CAMERA_DISTANCE * getResources().getDisplayMetrics().density));
+        //Camera distance
+        view.setCameraDistance((CAMERA_DISTANCE * view.getResources().getDisplayMetrics().density));
         //Rotation
         view.setRotationX(rotationFactorX);
         view.setRotationY(rotationFactorY);
@@ -454,8 +455,8 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
     private ObjectAnimator inComplexAnimation(final View target, final float targetScale,
                                               final float moveY) {
-        float TARGET_ROTATION = 45;
-        float TARGET_ROTATION_X = 45;
+        //float TARGET_ROTATION = 45;
+        //float TARGET_ROTATION_X = 45;
 
         target.setCameraDistance(CAMERA_DISTANCE * target.getResources().getDisplayMetrics().density);
 
@@ -475,11 +476,11 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
         target.setTranslationX(-target.getResources().getDisplayMetrics().widthPixels);
 
         ObjectAnimator rotationX = ObjectAnimator.ofFloat(target, View.ROTATION_X,
-                TARGET_ROTATION_X, 0).setDuration(700);
+                MAX_ROTATION_X, 0).setDuration(700);
         rotationX.setInterpolator(new QuintInOut());
         rotationX.setStartDelay(0 + 300);
         rotationX.start();
-        target.setRotationX(TARGET_ROTATION_X);
+        target.setRotationX(MAX_ROTATION_X);
 
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(target, View.SCALE_X, targetScale,
                 target.getScaleX()).setDuration(700);
@@ -497,11 +498,11 @@ public class BaseNavDrawerActivity extends AppCompatActivity {
 
         //Rotation
         ObjectAnimator rotation = ObjectAnimator.ofFloat(target, View.ROTATION,
-                TARGET_ROTATION, 0).setDuration(400);
+                MAX_ROTATION_Z, 0).setDuration(400);
         rotation.setInterpolator(new QuadInOut());
         rotation.setStartDelay(300);
         rotation.start();
-        target.setRotation(TARGET_ROTATION);
+        target.setRotation(MAX_ROTATION_X);
 
         return scaleY;
 
